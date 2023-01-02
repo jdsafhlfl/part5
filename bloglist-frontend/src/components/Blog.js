@@ -1,5 +1,6 @@
-import { useState } from "react"
-import blogService from "../services/blogs"
+/* eslint-disable linebreak-style */
+import { useState } from 'react'
+import blogService from '../services/blogs'
 
 const Blog = ({ blog, user, setBlogs }) => {
   const [visible, setVisible] = useState(false)
@@ -38,9 +39,9 @@ const Blog = ({ blog, user, setBlogs }) => {
     backgroundColor: 'blue'
   }
 
-  const buttonVisible = {display: user.username === blog.user.username ? '' : 'none'}
+  const buttonVisible = { display: user.username === blog.user.username ? '' : 'none' }
 
-  const deleteOneBlog = async () =>{
+  const deleteOneBlog = async () => {
     if(window.confirm('Remove blog '+blog.title+' by '+blog.author)){
       const blogId = blog.id
       await blogService.deleteBlog(blogId)
@@ -51,7 +52,7 @@ const Blog = ({ blog, user, setBlogs }) => {
   }
 
   return (
-    
+
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
         {blog.title} {blog.author}

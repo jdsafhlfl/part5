@@ -1,54 +1,56 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable react/display-name */
 import { useState, forwardRef, useImperativeHandle } from 'react'
-import CorrectNotification from "./CorrectNotification"
-import ErrorNotification from "./ErrorNotification"
+import CorrectNotification from './CorrectNotification'
+import ErrorNotification from './ErrorNotification'
 import Blog from './Blog'
 import PropTypes from 'prop-types'
 
 const Togglable = forwardRef((props, refs) => {
-    const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false)
 
-    const hideWhenVisible = { display: visible ? 'none' : '' }
-    const showWhenVisible = { display: visible ? '' : 'none' }
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
-    const toggleVisibility = () => {
-        setVisible(!visible)
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+  useImperativeHandle(refs, () => {
+    return {
+      toggleVisibility
     }
+  })
 
-    useImperativeHandle(refs, () => {
-        return {
-            toggleVisibility
-        }
-    })
+  props.blogs.sort((a, b) => a.likes - b.likes)
 
-    props.blogs.sort((a, b) => a.likes - b.likes)
-
-    return (
+  return (
+    <div>
+      <h2>blogs</h2>
+      <CorrectNotification message={props.correctMessage} />
+      <ErrorNotification message={props.errorMessage} />
+      <p>{props.user.name} logged in
+        <button onClick={props.handleLogout}>logout</button>
+      </p>
+      <div style={hideWhenVisible}>
+        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
         <div>
-            <h2>blogs</h2>
-            <CorrectNotification message={props.correctMessage} />
-            <ErrorNotification message={props.errorMessage} />
-            <p>{props.user.name} logged in
-                <button onClick={props.handleLogout}>logout</button>
-            </p>
-            <div style={hideWhenVisible}>
-                <button onClick={toggleVisibility}>{props.buttonLabel}</button>
-                <div>
-                    {props.blogs.map(blog =>
-                        <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
-                    )}
-                </div>
-            </div>
-            <div style={showWhenVisible}>
-                {props.children}
-                <button onClick={toggleVisibility}>cancel</button>
-            </div>
+          {props.blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
+          )}
         </div>
-    )
+      </div>
+      <div style={showWhenVisible}>
+        {props.children}
+        <button onClick={toggleVisibility}>cancel</button>
+      </div>
+    </div>
+  )
 })
 
 Togglable.propTypes = {
-    buttonLabel: PropTypes.string.isRequired,
-    setBlogs: PropTypes.func.isRequired
+  buttonLabel: PropTypes.string.isRequired,
+  setBlogs: PropTypes.func.isRequired
 }
 
 export default Togglable

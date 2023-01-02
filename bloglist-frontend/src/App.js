@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { useState, useEffect, useRef } from 'react'
 
 import LoginForm from './components/LoginForm'
@@ -44,13 +45,13 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
-      setCorrectMessage("valid login! welcome!")
+      setCorrectMessage('valid login! welcome!')
       setUser(user)
       setTimeout(() => {
         setCorrectMessage('')
       }, 5000)
     } catch (exception) {
-      setErrorMessage("wrong username or password")
+      setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage('')
 
@@ -61,7 +62,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
-    setCorrectMessage("Log out successfully!")
+    setCorrectMessage('Log out successfully!')
     setTimeout(() => {
       setCorrectMessage('')
     }, 5000)
