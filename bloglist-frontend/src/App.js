@@ -13,6 +13,9 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
+  const [correctMessage, setCorrectMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -39,33 +42,48 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
+      setCorrectMessage("valid login! welcome!")
+      setTimeout(() => {
+        setCorrectMessage('')
+      }, 5000)
     } catch (exception) {
-      console.log("invalid username or password")
+      setErrorMessage("wrong username or password")
+      setTimeout(() => {
+        setErrorMessage('')
+
+      }, 5000)
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+    setCorrectMessage("Log out successfully!")
+    setTimeout(() => {
+      setCorrectMessage('')
+    }, 5000)
   }
 
-  const handleCreate = (event) => {
+  const handleCreate = async (event) => {
     event.preventDefault()
     const newBlog = { title: title, author: author, url: url }
     try {
-      blogService.create(newBlog)
-        .then(response => {
-          console.log('create successfully')
-          blogService.getAll().then(blogs =>
-            setBlogs(blogs)
-          )
-        }
+      await blogService.create(newBlog)
+      blogService.getAll().then(blogs =>
+        setBlogs(blogs)
       )
       setAuthor('')
       setTitle('')
       setUrl('')
+      setCorrectMessage(`a new blog ${title} by ${author} added`)
+      setTimeout(() => {
+        setCorrectMessage('')
+      }, 5000)
     } catch (exception) {
-      console.log(exception)
+      setErrorMessage("invalid add, please check required input field!")
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
     }
   }
 
@@ -73,6 +91,8 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <CorrectNotification message={correctMessage} />
+        <ErrorNotification message={errorMessage} />
         <form onSubmit={handleLogin}>
           <div>username
             <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
@@ -89,6 +109,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <CorrectNotification message={correctMessage} />
+      <ErrorNotification message={errorMessage} />
       <p>{user.name} logged in
         <button onClick={handleLogout}>logout</button>
       </p>
@@ -110,6 +132,50 @@ const App = () => {
       )}
     </div>
   )
+}
+
+const CorrectNotification = (props) => {
+  const messageStyle = {
+    color: 'green',
+    fontSize: 25,
+    backgroundColor: '#CFCECE',
+    margin: '10px 2px 30px 2px',
+    border: 'solid green 3px',
+    padding: '10px 10px 10px 10px',
+    borderRadius: 8
+  }
+
+  if (props.message === '') {
+    return null
+  } else {
+    return (
+      <div style={messageStyle}>
+        {props.message}
+      </div>
+    )
+  }
+}
+
+const ErrorNotification = (props) => {
+  const messageStyle = {
+    color: 'red',
+    fontSize: 25,
+    backgroundColor: '#CFCECE',
+    margin: '10px 2px 30px 2px',
+    border: 'solid red 3px',
+    padding: '10px 10px 10px 10px',
+    borderRadius: 8
+  }
+
+  if (props.message === '') {
+    return null
+  } else {
+    return (
+      <div style={messageStyle}>
+        {props.message}
+      </div>
+    )
+  }
 }
 
 export default App
