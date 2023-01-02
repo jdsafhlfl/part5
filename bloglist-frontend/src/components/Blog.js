@@ -34,6 +34,22 @@ const Blog = ({ blog, user, setBlogs }) => {
     marginBottom: 5
   }
 
+  const buttonStyle = {
+    backgroundColor: 'blue'
+  }
+
+  const buttonVisible = {display: user.username === blog.user.username ? '' : 'none'}
+
+  const deleteOneBlog = async () =>{
+    if(window.confirm('Remove blog '+blog.title+' by '+blog.author)){
+      const blogId = blog.id
+      await blogService.deleteBlog(blogId)
+      blogService.getAll().then(blogs =>
+        setBlogs(blogs)
+      )
+    }
+  }
+
   return (
     
     <div style={blogStyle}>
@@ -46,6 +62,9 @@ const Blog = ({ blog, user, setBlogs }) => {
         <p>{blog.url}</p>
         <p>{blog.likes} <button onClick={updateLikes}>like</button></p>
         <p>{blog.author}</p>
+        <div style={buttonVisible}>
+          <button style={buttonStyle} onClick={deleteOneBlog} >remove</button>
+        </div>
       </div>
     </div>
   )
