@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect, useRef } from 'react'
+
+import LoginForm from './components/LoginForm'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
+
+import Togglable from './components/ToggleLabel'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -9,14 +14,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
   const [correctMessage, setCorrectMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const [createBlogVisible, setCreateVisible] = useState(false)
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -40,11 +41,11 @@ const App = () => {
         username, password,
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      setUser(user)
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
       setCorrectMessage("valid login! welcome!")
+      setUser(user)
       setTimeout(() => {
         setCorrectMessage('')
       }, 5000)
@@ -66,131 +67,21 @@ const App = () => {
     }, 5000)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-    const newBlog = { title: title, author: author, url: url }
-    try {
-      await blogService.create(newBlog)
-      blogService.getAll().then(blogs =>
-        setBlogs(blogs)
-      )
-      setAuthor('')
-      setTitle('')
-      setUrl('')
-      setCorrectMessage(`a new blog ${title} by ${author} added`)
-      setCreateVisible(false)
-      setTimeout(() => {
-        setCorrectMessage('')
-      }, 5000)
-    } catch (exception) {
-      setErrorMessage("invalid add, please check required input field!")
-      setTimeout(() => {
-        setErrorMessage('')
-      }, 5000)
-    }
-  }
-
   if (user === null) {
     return (
       <div>
-        <h2>log in to application</h2>
-        <CorrectNotification message={correctMessage} />
-        <ErrorNotification message={errorMessage} />
-        <form onSubmit={handleLogin}>
-          <div>username
-            <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
-          </div>
-          <div>password
-            <input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <LoginForm username={username} password={password} correctMessage={correctMessage} errorMessage={errorMessage} handleLogin={handleLogin} handleUsernameChange={({ target }) => setUsername(target.value)} handlePasswordChange={({ target }) => setPassword(target.value)} />
       </div>
     )
   }
 
-  const hideWhenVisible = { display: createBlogVisible ? 'none' : '' }
-  const showWhenVisible = { display: createBlogVisible ? '' : 'none' }
 
   return (
-    <div>
-      <h2>blogs</h2>
-      <CorrectNotification message={correctMessage} />
-      <ErrorNotification message={errorMessage} />
-      <p>{user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
-      <div style={hideWhenVisible}>
-        <button onClick={() => setCreateVisible(true)}>create new blog</button>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-      </div>
-
-      <div style={showWhenVisible}>
-        <h2>create new</h2>
-        <form onSubmit={handleCreate}>
-          <div>title:
-            <input type="text" value={title} name="Title" onChange={({ target }) => setTitle(target.value)} />
-          </div>
-          <div>author:
-            <input type="text" value={author} name="Author" onChange={({ target }) => setAuthor(target.value)} />
-          </div>
-          <div>url:
-            <input type="text" value={url} name="Url" onChange={({ target }) => setUrl(target.value)} />
-          </div>
-          <button type="submit">create</button>
-        </form>
-        <button onClick={() => setCreateVisible(false)}>cancel</button>
-      </div>
-
-
-    </div>
+    <Togglable ref={blogFormRef} buttonLabel="create new blog" user={user} blogs={blogs} handleLogout={handleLogout} correctMessage={correctMessage} errorMessage={errorMessage} >
+      <BlogForm blogFormRef={blogFormRef} user={user} blogs={blogs} setBlogs={setBlogs} setUser={setUser} correctMessage={correctMessage} errorMessage={errorMessage} setCorrectMessage={setCorrectMessage} setErrorMessage={setErrorMessage} />
+    </Togglable>
   )
 }
 
-const CorrectNotification = (props) => {
-  const messageStyle = {
-    color: 'green',
-    fontSize: 25,
-    backgroundColor: '#CFCECE',
-    margin: '10px 2px 30px 2px',
-    border: 'solid green 3px',
-    padding: '10px 10px 10px 10px',
-    borderRadius: 8
-  }
-
-  if (props.message === '') {
-    return null
-  } else {
-    return (
-      <div style={messageStyle}>
-        {props.message}
-      </div>
-    )
-  }
-}
-
-const ErrorNotification = (props) => {
-  const messageStyle = {
-    color: 'red',
-    fontSize: 25,
-    backgroundColor: '#CFCECE',
-    margin: '10px 2px 30px 2px',
-    border: 'solid red 3px',
-    padding: '10px 10px 10px 10px',
-    borderRadius: 8
-  }
-
-  if (props.message === '') {
-    return null
-  } else {
-    return (
-      <div style={messageStyle}>
-        {props.message}
-      </div>
-    )
-  }
-}
 
 export default App
