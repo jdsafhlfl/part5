@@ -19,6 +19,8 @@ const Togglable = forwardRef((props, refs) => {
         }  
     })
 
+    props.blogs.sort((a,b) => a.likes - b.likes)
+
     return (
         <div>
             <h2>blogs</h2>
