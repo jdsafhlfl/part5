@@ -77,7 +77,7 @@ const App = () => {
 
 
   return (
-    <Togglable ref={blogFormRef} buttonLabel="create new blog" user={user} blogs={blogs} handleLogout={handleLogout} correctMessage={correctMessage} errorMessage={errorMessage} >
+    <Togglable ref={blogFormRef} buttonLabel="create new blog" user={user} blogs={blogs} setBlogs={setBlogs} handleLogout={handleLogout} correctMessage={correctMessage} errorMessage={errorMessage} >
       <BlogForm blogFormRef={blogFormRef} user={user} blogs={blogs} setBlogs={setBlogs} setUser={setUser} correctMessage={correctMessage} errorMessage={errorMessage} setCorrectMessage={setCorrectMessage} setErrorMessage={setErrorMessage} />
     </Togglable>
   )

@@ -31,7 +31,7 @@ const Togglable = forwardRef((props, refs) => {
                 <button onClick={toggleVisibility}>{props.buttonLabel}</button>
                 <div>
                     {props.blogs.map(blog =>
-                        <Blog key={blog.id} blog={blog} />
+                        <Blog key={blog.id} blog={blog} user={props.user} setBlogs={props.setBlogs} />
                     )}
                 </div>
             </div>
