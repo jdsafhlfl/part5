@@ -38,7 +38,7 @@ const BlogForm = (props) => {
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={() => props.handleCreate({ title:{ title }, author:{ author }, url:{ url } })}>
+      <form onSubmit={handleCreate}>
         <div>title:
           <input type="text" value={title} name="Title" onChange={({ target }) => setTitle(target.value)} />
         </div>

@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, user, setBlogs, updateLikes }) => {
+const Blog = ({ blog, user, setBlogs }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -12,7 +12,7 @@ const Blog = ({ blog, user, setBlogs, updateLikes }) => {
     setVisible(!visible)
   }
 
-  const updateLikes1 = async () => {
+  const updateLikes = async () => {
     const newObject = {
       user: blog.user.id,
       blogId: blog.id,
