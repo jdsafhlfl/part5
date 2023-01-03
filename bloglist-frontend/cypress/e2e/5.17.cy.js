@@ -53,5 +53,17 @@ describe('Blog app', function() {
       cy.get('#create').click()
       cy.contains('Hello world linux')
     })
+
+    it('A blog can be liked', function() {
+      cy.contains('create new blog').click()
+      cy.get('#title').type('Hello world')
+      cy.get('#author').type('linux')
+      cy.get('#url').type('www.helsinki.com')
+      cy.get('#create').click()
+
+      cy.get('#view').click()
+      cy.get('#like').click()
+      cy.contains('1')
+    })
   })
 })
