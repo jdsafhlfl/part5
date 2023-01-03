@@ -106,4 +106,36 @@ describe('Blog app', function() {
       // cy.get('#remove').click()
     })
   })
+  describe('sort blogs', function () {
+    beforeEach(function() {
+      // log in user here
+      cy.get('#username').type('root')
+      cy.get('#password').type('secret')
+      cy.contains('login').click()
+    })
+    it('blogs are ordered', function() {
+      cy.contains('create new blog').click()
+      cy.get('#title').type('blog1')
+      cy.get('#author').type('linux')
+      cy.get('#url').type('www.helsinki.com')
+      cy.get('#create').click()
+
+      cy.contains('create new blog').click()
+      cy.get('#title').type('blog2')
+      cy.get('#author').type('linux')
+      cy.get('#url').type('www.helsinki.com')
+      cy.get('#create').click()
+
+      cy.get('.general').eq(0).contains('blog1')
+      cy.get('.general').eq(1).contains('blog2')
+
+      cy.get('.general').eq(0).contains('view').click()
+      cy.get('.general').eq(1).contains('view').click()
+
+      cy.get('.detailed').eq(1).contains('like').click()
+
+      cy.get('.general').eq(0).contains('blog2')
+      cy.get('.general').eq(1).contains('blog1')
+    })
+  })
 })
