@@ -14,7 +14,7 @@ const CorrectNotification = (props) => {
     return null
   } else {
     return (
-      <div style={messageStyle}>
+      <div style={messageStyle} className='correct' >
         {props.message}
       </div>
     )
