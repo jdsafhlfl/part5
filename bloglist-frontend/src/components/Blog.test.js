@@ -5,8 +5,9 @@ import '@testing-library/jest-dom/extend-expect'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
 import Blog from "./Blog"
+import BlogForm from "./BlogForm"
 
-describe("exercise5.13-5.14", () => {
+describe("exercise5.13-5.16", () => {
   test('renders content', () => {
 
     const user = {
@@ -26,6 +27,7 @@ describe("exercise5.13-5.14", () => {
 
 
     const div1 = container.querySelector('.general')
+    expect(div1).not.toHaveStyle('display: none')
     expect(div1).toHaveTextContent("happy new year")
     expect(div1).toHaveTextContent("linux")
     expect(div1).not.toHaveTextContent("www.google.com")
@@ -96,6 +98,26 @@ describe("exercise5.13-5.14", () => {
     await user.click(likeButton)
 
     expect(mockHandler.mock.calls).toHaveLength(2)
+
+  })
+  test('BlogForm', async () => {
+    const createBlog = jest.fn()
+    const user = userEvent.setup()
+
+    render(<BlogForm handleCreate={createBlog} />)
+
+    const inputs = screen.getAllByRole('textbox')
+    const createButton = screen.getByText('create')
+
+    await user.type(inputs[0], 'create a title')
+    await user.type(inputs[1], 'create a author')
+    await user.type(inputs[2], 'create a url')
+    await user.click(createButton)
+
+    expect(createBlog.mock.calls).toHaveLength(1)
+    expect(createBlog.mock.calls[0][0].author.author).toBe('create a author')
+    expect(createBlog.mock.calls[0][0].title.title).toBe('create a title')
+    expect(createBlog.mock.calls[0][0].url.url).toBe('create a url')
 
   })
 } )
