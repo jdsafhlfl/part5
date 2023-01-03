@@ -35,7 +35,7 @@ describe("exercise5.13-5.14", () => {
     expect(div2).toHaveStyle('display: none')
   })
 
-  test('clicking the button calls event handler once', async () => {
+  test('clicking the button', async () => {
     const userInput = {
       username: "root"
     }
@@ -67,6 +67,35 @@ describe("exercise5.13-5.14", () => {
 
     expect(div1).not.toHaveStyle('display: none')
     expect(div2).toHaveStyle('display: none')
+
+  })
+  test('clicking like button twice', async () => {
+
+    const userInput = {
+      username: "root"
+    }
+
+    const blog = {
+      title: "happy new year",
+      author: "linux",
+      url: "www.google.com",
+      likes: 10,
+      user: userInput
+    }
+
+    const mockHandler = jest.fn()
+
+    render(<Blog blog={blog} user={userInput} updateLikes={mockHandler} />)
+
+    const user = userEvent.setup()
+    const viewButton = screen.getByText('view')
+    await user.click(viewButton)
+
+    const likeButton = screen.getByText("like")
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
 
   })
 } )
