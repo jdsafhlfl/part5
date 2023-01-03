@@ -14,7 +14,7 @@ const ErrorNotification = (props) => {
     return null
   } else {
     return (
-      <div style={messageStyle}>
+      <div style={messageStyle} className='error'>
         {props.message}
       </div>
     )
